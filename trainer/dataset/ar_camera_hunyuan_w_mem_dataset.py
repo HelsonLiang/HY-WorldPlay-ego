@@ -469,10 +469,10 @@ class CameraJsonWMemDataset(Dataset):
                 latent = latent_pt['latent'][0]
                 latent_length = latent.shape[1]
 
-                # Single-frame mode (e.g. GameFactory: one image per clip); otherwise multi-frame
+                # if self.causal:
                 if latent_length < self.window_frames:
-                    max_length = latent_length
-                    max_frames = max_length
+                    idx = self.rng.randint(0, self.all_length - 1)
+                    continue
                 else:
                     max_frames = int(self.shared_state["max_frames"]) // 4 * 4
                     max_length = min(max_frames, latent_length // 4 * 4)
@@ -494,12 +494,11 @@ class CameraJsonWMemDataset(Dataset):
                     byt5_text_mask = self.neg_byt5_pt['byt5_text_mask'][0]
 
                 pose_json = json.load(open(pose_path, 'r'))
-                pose_keys = sorted([k for k in pose_json.keys() if str(k).isdigit()], key=int)
+                pose_keys = list(pose_json.keys())
                 intrinsic_list = []
                 w2c_list = []
                 for i in range(latent.shape[1]):
-                    ki = min(4 * (i - 1) + 4, len(pose_keys) - 1) if i > 0 else 0
-                    t_key = pose_keys[ki]
+                    t_key = pose_keys[0] if i == 0 else pose_keys[4 * (i - 1) + 4]
                     intrinsic = np.array(pose_json[t_key]['intrinsic'])
                     w2c = np.array(pose_json[t_key]['w2c'])
 
@@ -547,11 +546,10 @@ class CameraJsonWMemDataset(Dataset):
 
                 else:    # prepare action labels on the fly
                     c2ws = np.linalg.inv(w2c_list)
+                    C_inv = np.linalg.inv(c2ws[:-1])
                     relative_c2w = np.zeros_like(c2ws)
                     relative_c2w[0, ...] = c2ws[0, ...]
-                    if c2ws.shape[0] > 1:
-                        C_inv = np.linalg.inv(c2ws[:-1])
-                        relative_c2w[1:, ...] = C_inv @ c2ws[1:, ...]
+                    relative_c2w[1:, ...] = C_inv @ c2ws[1:, ...]
                     trans_one_hot = np.zeros((relative_c2w.shape[0], 4), dtype=np.int32)
                     rotate_one_hot = np.zeros((relative_c2w.shape[0], 4), dtype=np.int32)
 
@@ -601,9 +599,8 @@ class CameraJsonWMemDataset(Dataset):
 
                 select_window_out_flag = 0  # whether to select the latents with length > window_frames
                 select_prob = self.rng.random()
-                single_frame_mode = latent.shape[1] < self.window_frames
 
-                if not single_frame_mode and select_prob < 0.8:
+                if select_prob < 0.8:
                     select_window_out_flag = 1  # mean to select frames outside the window
                     max_index = latent.shape[1] - (self.window_frames - self.memory_frames)
 
@@ -629,7 +626,7 @@ class CameraJsonWMemDataset(Dataset):
                     action_for_pe = reset_action_for_pe
 
                 else:
-                    pred_latent_size = latent.shape[1] if single_frame_mode else self.window_frames
+                    pred_latent_size = self.window_frames
                     latent = latent[:, :pred_latent_size, ...]
                     w2c_list = w2c_list[:pred_latent_size]
                     intrinsic_list = intrinsic_list[:pred_latent_size]

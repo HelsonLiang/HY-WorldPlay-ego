@@ -1,9 +1,3 @@
-# ========== GameFactory 单帧 middle training（方案 A）==========
-# 使用带 pose_path 的 latents，AR dataset 已支持单帧（每 clip 一图一 latent）。
-# 单帧时建议 --window_frames 1，且 sp_size 需整除 window_frames（如 1 或 4 时用 1）。
-# GF_LATENTS_JSON=/scratch/peilab/ysunem/ys_26.2/3.13_real_mani/latents_output_3.15/latents_with_pose.json
-# GF_OUTPUT_DIR=  # 填写 middle 输出目录
-# ==========
 
 export WANDB_BASE_URL="https://api.wandb.ai"
 # export WANDB_MODE=online
@@ -17,9 +11,9 @@ VALIDATION_DATASET_FILE=    # Path to validation json file
 NUM_GPUS=4                                                                                                                                                                    # 节点数量
 export CUDA_VISIBLE_DEVICES=4,5,6,7
 
-# Training arguments (for GameFactory single-frame: set --json_path to latents_with_pose.json, --window_frames 1)
+# Training arguments
 training_args=(
-  --json_path # Path to training dataset json file (e.g. latents_output_3.15/latents_with_pose.json)
+  --json_path # Path to training dataset json file                   
   --causal                                                                                    
   --action                                                                                    
   --i2v_rate 0.2
