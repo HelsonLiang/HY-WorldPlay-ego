@@ -13,10 +13,21 @@
 
 source ~/.bashrc
 source ~/miniconda3/etc/profile.d/conda.sh
-conda activate worldplay
+conda activate worldplay2
 
 cd /home/ysunem/ys_26.2/3.13_real_mani/hy_worldplay_ego
 export PYTHONPATH=$PYTHONPATH:.
+
+python -c "
+import torch
+print('torch:', torch.__version__, torch.__file__)
+print('cuda:', torch.version.cuda)
+print('device:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'none')
+import flash_attn
+print('flash_attn: ok')
+"
+
+
 
 export T2V_REWRITE_BASE_URL="<your_vllm_server_base_url>"
 export T2V_REWRITE_MODEL_NAME="<your_model_name>"
