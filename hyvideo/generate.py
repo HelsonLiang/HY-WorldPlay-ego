@@ -19,6 +19,13 @@ import os
 if "PYTORCH_CUDA_ALLOC_CONF" not in os.environ:
     os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
+import datetime
+import time
+def get_date_time():
+    date_time = datetime.datetime.now().strftime("%m%d_%H%M%S")
+    return date_time
+
+
 import loguru
 import torch
 import argparse
@@ -773,7 +780,7 @@ def generate_video(args):
         output_path = args.output_path
         os.makedirs(output_path, exist_ok=True)
 
-        save_video_path = os.path.join(output_path, "gen.mp4")
+        save_video_path = os.path.join(output_path, f"gen_{get_date_time()}.mp4")
         save_video_sr_path = os.path.join(output_path, "gen_sr.mp4")
 
         # Determine which video to process for UI overlay

@@ -39,7 +39,10 @@ def download_hy_worldplay():
     print("[1/6] Downloading tencent/HY-WorldPlay...")
     print("=" * 60)
 
-    worldplay_path = snapshot_download("tencent/HY-WorldPlay")
+    worldplay_path = snapshot_download("tencent/HY-WorldPlay", 
+        local_dir="/scratch/peilab/ysunem/ys_26.2/3.13_real_mani/hy_worldplay_ego",
+        local_dir_use_symlinks=False,
+    )
     print(f"Downloaded to: {worldplay_path}")
 
     # Fix: Rename model.safetensors to diffusion_pytorch_model.safetensors
@@ -68,6 +71,8 @@ def download_hunyuan_video():
 
     hunyuan_path = snapshot_download(
         "tencent/HunyuanVideo-1.5",
+        local_dir="/scratch/peilab/ysunem/ys_26.2/3.13_real_mani/hy_worldplay_ego",
+        local_dir_use_symlinks=False,
         allow_patterns=["vae/*", "scheduler/*", "transformer/480p_i2v/*"],
     )
     print(f"Downloaded to: {hunyuan_path}")

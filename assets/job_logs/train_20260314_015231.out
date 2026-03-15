@@ -1,0 +1,34 @@
+DEBUG safetensor_path = /scratch/peilab/ysunem/ys_26.2/3.13_real_mani/hy_worldplay_ego/ar_distilled_action_model/diffusion_pytorch_model.safetensors
+HY-World 1.5 loading from:  /scratch/peilab/ysunem/ys_26.2/3.13_real_mani/hy_worldplay_ego/ar_distilled_action_model/diffusion_pytorch_model.safetensors
+Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  20%|██        | 1/5 [00:01<00:04,  1.15s/it]Loading checkpoint shards:  40%|████      | 2/5 [00:02<00:03,  1.12s/it]Loading checkpoint shards:  60%|██████    | 3/5 [00:03<00:01,  1.00it/s]Loading checkpoint shards:  80%|████████  | 4/5 [00:03<00:00,  1.07it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:03<00:00,  1.27it/s]
+2026-03-14 01:53:12.546 | WARNING  | __main__:rank0_log:297 - Warning: Prompt rewriting is disabled. This may affect the quality of generated videos.
+
+============================================================
+🎬  HunyuanVideo Generation Task
+------------------------------------------------------------
+User Prompt:               A paved pathway leads towards a stone arch bridge spanning a calm body of water.  Lush green trees and foliage line the path and the far bank of the water. A traditional-style pavilion with a tiered, reddish-brown roof sits on the far shore. The water reflects the surrounding greenery and the sky.  The scene is bathed in soft, natural light, creating a tranquil and serene atmosphere. The pathway is composed of large, rectangular stones, and the bridge is constructed of light gray stone.  The overall composition emphasizes the peaceful and harmonious nature of the landscape.
+Rewritten Prompt:          <disabled>
+Aspect Ratio:              16:9
+Video Length:              125
+Reference Image:           <PIL.Image.Image image mode=RGB size=1280x704 at 0x1552001E7A30>
+Guidance Scale:            1.0
+Guidance Embedded Scale:   None
+Shift:                     5.0
+Seed:                      1
+Video Resolution:          848 x 464
+Attn mode:                 flash
+Transformer dtype:         torch.bfloat16
+Sampling Steps:            4
+Use Meanflow:              False
+============================================================
+
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:02<00:08,  2.69s/it] 50%|█████     | 2/4 [00:03<00:02,  1.37s/it] 75%|███████▌  | 3/4 [00:03<00:00,  1.06it/s]100%|██████████| 4/4 [00:04<00:00,  1.34it/s]100%|██████████| 4/4 [00:09<00:00,  2.34s/it]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:02<00:08,  2.72s/it] 50%|█████     | 2/4 [00:03<00:02,  1.45s/it] 75%|███████▌  | 3/4 [00:03<00:01,  1.05s/it]100%|██████████| 4/4 [00:04<00:00,  1.16it/s]100%|██████████| 4/4 [00:09<00:00,  2.34s/it]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:03<00:09,  3.05s/it] 50%|█████     | 2/4 [00:03<00:03,  1.66s/it] 75%|███████▌  | 3/4 [00:04<00:01,  1.22s/it]100%|██████████| 4/4 [00:05<00:00,  1.01s/it]100%|██████████| 4/4 [00:10<00:00,  2.51s/it]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:02<00:08,  2.92s/it] 50%|█████     | 2/4 [00:03<00:03,  1.68s/it] 75%|███████▌  | 3/4 [00:04<00:01,  1.28s/it]100%|██████████| 4/4 [00:05<00:00,  1.10s/it]100%|██████████| 4/4 [00:10<00:00,  2.58s/it]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:03<00:09,  3.04s/it] 50%|█████     | 2/4 [00:03<00:03,  1.80s/it] 75%|███████▌  | 3/4 [00:04<00:01,  1.42s/it]100%|██████████| 4/4 [00:05<00:00,  1.23s/it]100%|██████████| 4/4 [00:10<00:00,  2.70s/it]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:03<00:09,  3.18s/it] 50%|█████     | 2/4 [00:04<00:03,  1.93s/it] 75%|███████▌  | 3/4 [00:05<00:01,  1.54s/it]100%|██████████| 4/4 [00:06<00:00,  1.35s/it]100%|██████████| 4/4 [00:11<00:00,  2.83s/it]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:03<00:09,  3.28s/it] 50%|█████     | 2/4 [00:04<00:03,  1.97s/it] 75%|███████▌  | 3/4 [00:05<00:01,  1.63s/it]100%|██████████| 4/4 [00:06<00:00,  1.41s/it]100%|██████████| 4/4 [00:12<00:00,  3.10s/it]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:03<00:09,  3.29s/it] 50%|█████     | 2/4 [00:04<00:03,  1.98s/it] 75%|███████▌  | 3/4 [00:05<00:01,  1.56s/it]100%|██████████| 4/4 [00:06<00:00,  1.37s/it]100%|██████████| 4/4 [00:12<00:00,  3.12s/it]
+Saved video to: ./outputs/gen.mp4
+[rank0]:[W314 01:56:32.250543330 ProcessGroupNCCL.cpp:1496] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())

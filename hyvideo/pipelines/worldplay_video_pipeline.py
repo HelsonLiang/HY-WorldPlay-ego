@@ -2041,6 +2041,7 @@ class HunyuanVideo_1_5_Pipeline(DiffusionPipeline):
             from safetensors.torch import load_file
 
             safetensor_path = action_ckpt
+            print("DEBUG safetensor_path =", safetensor_path, flush=True)
             state_dict = load_file(safetensor_path)
             transformer.load_state_dict(state_dict, strict=True)
             print("HY-World 1.5 loading from: ", action_ckpt)
