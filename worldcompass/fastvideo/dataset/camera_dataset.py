@@ -313,8 +313,18 @@ class HunyuanImageJsonDataset(Dataset):
                         0
                     ]  # Remove batch dimension -> [256]
 
-                pose_json = self.random_pose[idx % len(self.random_pose)]
-                pose_keys = list(pose_json.keys())
+                # Per-sample pose_path (e.g. from GameFactory merge); fallback to random_pose
+                pose_path = json_data.get("pose_path")
+                if pose_path and os.path.isfile(pose_path):
+                    with open(pose_path, "r") as f:
+                        pose_json = json.load(f)
+                else:
+                    pose_json = self.random_pose[idx % len(self.random_pose)]
+                pose_keys = sorted([k for k in pose_json.keys() if str(k).isdigit()], key=int)
+                if len(pose_keys) < self.window_frames:
+                    raise ValueError(
+                        f"pose has {len(pose_keys)} frames, need >= {self.window_frames}"
+                    )
 
                 intrinsic_list = []
                 w2c_list = []

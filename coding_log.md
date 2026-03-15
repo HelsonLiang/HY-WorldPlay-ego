@@ -48,12 +48,28 @@
     --output_json /scratch/.../latents_output_3.15/latents_with_pose.json
   ```
 
-### 6. Middle training（计划下一步）
+### 6. Middle training（方案 A：AR 支持单帧，已做）
 
 - **入口**：`scripts/training/hyvideo15/run_ar_hunyuan_action_mem.sh`，数据用上面带 `pose_path` 的 `latents_with_pose.json`（`--json_path`）。
-- **注意**：当前 AR dataset 要求 `latent_length >= window_frames`（默认 24），即每条样本为**多帧** latent；我们 2.3 产出的是**单帧**（每 clip 一图一 latent）。若直接用会全被 skip。可选：(1) 用 WorldCompass RL 路径 + 在 camera_dataset 里支持 per-sample pose_path，用单帧 latent；(2) 或后续从 game_factory 视频抽多帧再做潜空间，满足 AR 的 window_frames。
+- **方案 A 改动**（`trainer/dataset/ar_camera_hunyuan_w_mem_dataset.py`）：
+  - 单帧不再 skip：当 `latent_length < window_frames` 时用 `max_length = latent_length`、`max_frames = max_length`，保留该样本。
+  - Pose 键：`pose_keys` 按数字排序；按帧取 pose 时用 `min(4*(i-1)+4, len(pose_keys)-1)` 防越界，单帧只用 `pose_keys[0]`。
+  - 单帧时不做「选窗外帧」：仅当 `latent.shape[1] >= window_frames` 且 `select_prob < 0.8` 才做 memory 窗口选择；否则用 `pred_latent_size = latent.shape[1]`（单帧为 1）。
+  - 单帧时 on-the-fly action：`c2ws.shape[0] > 1` 才做 `C_inv @ c2ws[1:]`，避免 `c2ws[:-1]` 为空报错。
+- **脚本**：`run_ar_hunyuan_action_mem.sh` 顶部已加 GameFactory 单帧说明，`--json_path` 可指向 `latents_output_3.15/latents_with_pose.json`；单帧建议 `--window_frames 1`，且 `sp_size` 需整除 window_frames。
 
-### 7. 依赖与路径小记
+### 7. WorldCompass RL 代码改动（已做）
+
+- **camera_dataset.py**（`worldcompass/fastvideo/dataset/camera_dataset.py`）  
+  - 在 `HunyuanImageJsonDataset.__getitem__` 中：若当前条目的 `json_data` 含有 **`pose_path`** 且该文件存在，则从该路径读取 pose JSON（单条 pose 序列，格式同原 random_pose 中一项），用其建 w2c/intrinsic/action；否则仍用 **`random_pose[idx % len(self.random_pose)]`**。  
+  - 对从文件读入的 pose 用 `sorted(..., key=int)` 取帧序，并检查帧数 ≥ `window_frames`。
+- **train_worldcompass.sh**（`worldcompass/scripts/train_worldcompass.sh`，未改 backup）  
+  - **TRAIN_LATENTS_DIR**：`/scratch/peilab/ysunem/ys_26.2/3.13_real_mani/latents_output_3.15`  
+  - **EVAL_LATENTS_DIR**：同上（可后续改为单独 eval 目录或子集）。  
+  - **--json_path / --eval_json_path**：改为使用 **`latents_with_pose.json`**（不再用 `latents.json`）。  
+  - **POSE_PATH**：默认 `.../worldcompass/prepare_dataset/dataset/harder_random_poses.json`，供「无 pose_path 的样本」兜底；需保证该文件存在（或改为其他合法 pose 列表 JSON）。
+
+### 8. 依赖与路径小记
 
 - Glyph byt5：需 `text_encoder/Glyph-SDXL-v2/checkpoints/byt5_model.pt`，可用 ModelScope 下载 AI-ModelScope/Glyph-SDXL-v2 后把 checkpoints 拷进去。
 - 多卡时用 `python -m torch.distributed.run`，避免用到 `~/.local/bin/torchrun`（未在 conda 环境里）。
@@ -73,6 +89,9 @@
 | 合并 pose 脚本  | `worldcompass/prepare_dataset/merge_latents_pose.py` |
 | 带 pose 的 latents（middle/RL 用） | `latents_output_3.15/latents_with_pose.json`（合并脚本输出） |
 | Middle 训练入口 | `scripts/training/hyvideo15/run_ar_hunyuan_action_mem.sh` |
+| RL 训练脚本（已改） | `worldcompass/scripts/train_worldcompass.sh`（未改 train_worldcompass_backup.sh） |
+| RL 用 dataset（per-sample pose） | `worldcompass/fastvideo/dataset/camera_dataset.py` HunyuanImageJsonDataset |
+| POSE_PATH 兜底 | `worldcompass/prepare_dataset/dataset/harder_random_poses.json` |
 
 
 

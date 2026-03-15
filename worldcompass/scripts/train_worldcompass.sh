@@ -1,6 +1,9 @@
 #!/bin/bash
 
 source ~/.bashrc
+source $(conda info --base)/etc/profile.d/conda.sh
+conda activate worldplay2   # 或 worldplay2，按你实际环境名
+
 
 export PYTHONUNBUFFERED=1
 
@@ -24,15 +27,17 @@ export WORLD_SIZE=$NODES
 export RANK=$RANK           # Node rank, ranged from 0 to N-1
 export MASTER_PORT=27858
 export NUM_NODES=$WORLD_SIZE
+export WANDB_MODE=online
 
-CACHE_DIR=""              # [TODO] Path to the overall checkpoint cache directory
-HUNYUAN_CHECKPOINT=""     # [TODO] Path to the HunYuan checkpoint directory
-WORLDPLAY_CHECKPOINT=""   # [TODO] Path to the WorldPlay checkpoint directory
+CACHE_DIR="/scratch/peilab/ysunem/ys_26.2/3.13_real_mani/hy_worldplay_ego/cache"
+HUNYUAN_CHECKPOINT="/scratch/peilab/ysunem/ys_26.2/3.13_real_mani/hy_worldplay_ego"
+WORLDPLAY_CHECKPOINT="/scratch/peilab/ysunem/ys_26.2/3.13_real_mani/hy_worldplay_ego"
 
-TRAIN_LATENTS_DIR=""      # [TODO] Path to the train latents directory
-EVAL_LATENTS_DIR=""       # [TODO] Path to the eval latents directory
-POSE_PATH=""              # [TODO] Path to the custom action pose json
-OUTPUT_DIR=""             # [TODO] Path to the output directory
+OUTPUT_DIR="/scratch/peilab/ysunem/ys_26.2/3.13_real_mani/hy_worldplay_ego/worldcompass_rl_output"
+# Train/eval latents: use latents_with_pose.json (GameFactory merge output) for per-sample pose
+TRAIN_LATENTS_DIR="/scratch/peilab/ysunem/ys_26.2/3.13_real_mani/latents_output_3.15"
+EVAL_LATENTS_DIR="/scratch/peilab/ysunem/ys_26.2/3.13_real_mani/latents_output_3.15"
+POSE_PATH="/home/ysunem/ys_26.2/3.13_real_mani/hy_worldplay_ego/worldcompass/prepare_dataset/dataset/harder_random_poses.json"  # Fallback when sample has no pose_path; must exist
 
 exp_name="WorldCompass"
 
@@ -56,8 +61,8 @@ model_args=(
 # Training arguments
 training_args=(
   # Path related arguments
-  --json_path "${TRAIN_LATENTS_DIR}/latents.json"                            # Path to train latents json file
-  --eval_json_path "${EVAL_LATENTS_DIR}/latents.json"                        # Path to eval latents json file
+  --json_path "${TRAIN_LATENTS_DIR}/latents_with_pose.json"                   # Train latents with per-sample pose_path (GameFactory)
+  --eval_json_path "${EVAL_LATENTS_DIR}/latents_with_pose.json"               # Eval latents (same or subset)
   --random_pose_path "${POSE_PATH}"                                          # Path to random pose json file
   --vae_path "${HUNYUAN_CHECKPOINT}/vae/"                                    # Path to VAE model
   --cache_dir "${CACHE_DIR}"                                                 # Path to cache directory
@@ -69,9 +74,9 @@ training_args=(
   --camera_estimator "dav3"                                                  # Camera estimator: "dav3" or "worldmirror"
 
   # wandb arguments
-  --wandb_key ""                                                             # [TODO] Set wandb key
-  --wandb_entity ""                                                          # [TODO] Set wandb entity
-  --tracker_project_name "worldcompass"
+  --wandb_key "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"                                                             # [TODO] Set wandb key
+  --wandb_entity "ysunem-hong-kong-university-of-science-and-technology-org"                                                          # [TODO] Set wandb entity
+  --tracker_project_name "3.15_hunyuan1.5_mc"
 
   # Basic training parameters
   --max_train_steps 100                                                      # Number of training iterations
